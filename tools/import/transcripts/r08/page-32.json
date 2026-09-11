@@ -1,0 +1,12 @@
+{
+  "page": 32,
+  "questions": [
+    {
+      "number": 67,
+      "text": "手続 sort は，要素数が2以上の整数型の配列を引数 numberArray で受け取り，その要素を昇順に並べ替えた結果を出力する。手続 sort の動作確認のために，処理の途中で j の値と workArray の全ての要素を出力する。配列 numberArray を{3, 5, 1, 2, 4}とし，手続 sort を sort(numberArray)として呼び出したとき，j の値が3と出力された直後の workArray の全ての要素の出力はどれか。ここで，配列の要素番号は1から始まる。",
+      "choices": ["1, 2, 3, 4, 5", "1, 2, 3, 5, 4", "4, 5, 3, 2, 1", "5, 4, 3, 2, 1"],
+      "hasFigure": true,
+      "figureNote": "擬似言語プログラム：手続sortのソースコード（選択ソート、j・workArrayの出力を含む）"
+    }
+  ]
+}
