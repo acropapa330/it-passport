@@ -1,0 +1,23 @@
+[
+  {
+    "code": "r08",
+    "name": "令和8年度",
+    "qsPdf": "2026r08_ip_qs.pdf",
+    "ansPdf": "2026r08_ip_ans.pdf",
+    "fieldRanges": { "strategy": [1, 34], "management": [35, 54], "technology": [55, 100] }
+  },
+  {
+    "code": "r07",
+    "name": "令和7年度",
+    "qsPdf": "2025r07_ip_qs.pdf",
+    "ansPdf": "2025r07_ip_ans.pdf",
+    "fieldRanges": { "strategy": [1, 35], "management": [36, 55], "technology": [56, 100] }
+  },
+  {
+    "code": "r06",
+    "name": "令和6年度",
+    "qsPdf": "2024r06_ip_qs.pdf",
+    "ansPdf": "2024r06_ip_ans.pdf",
+    "fieldRanges": { "strategy": [1, 35], "management": [36, 55], "technology": [56, 100] }
+  }
+]
