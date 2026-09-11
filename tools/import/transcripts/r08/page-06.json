@@ -16,7 +16,7 @@
     {
       "number": 12,
       "text": "A社は，自社の業務プロセスの課題を抽出し，見直しをするために流れ図を用いて業務プロセスを可視化することにした。A社が流れ図の作成において利用する記述様式として，最も適切なものはどれか。",
-      "choices": ["CRUD図", "DMM（Diamond Mandala Matrix）", "E−R図", "WFA（Work Flow Architecture）"],
+      "choices": ["CRUD図", "DMM (Diamond Mandala Matrix)", "E−R図", "WFA (Work Flow Architecture)"],
       "hasFigure": false
     }
   ]

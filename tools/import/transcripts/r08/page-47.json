@@ -15,8 +15,8 @@
     },
     {
       "number": 97,
-      "text": "OSS（Open Source Software）の取扱いに関する記述のうち，適切なものだけを全て挙げたものはどれか。\na　OSSを集めた記録媒体を，顧客に有償で提供する。\nb　改変したOSSを，特定の利用分野に制限してOSSとして提供する。\nc　不具合を発見して修正したOSSのソースコードを，自分のWebサイトで提供する。",
-      "choices": ["a", "a，c", "b，c", "c"],
+      "text": "OSS (Open Source Software) の取扱いに関する記述のうち，適切なものだけを全て挙げたものはどれか。\na　OSSを集めた記録媒体を，顧客に有償で提供する。\nb　改変したOSSを，特定の利用分野に制限してOSSとして提供する。\nc　不具合を発見して修正したOSSのソースコードを，自分のWebサイトで提供する。",
+      "choices": ["a", "a, c", "b, c", "c"],
       "hasFigure": false
     }
   ]
