@@ -1,0 +1,28 @@
+{
+  "page": 28,
+  "questions": [
+    {
+      "number": 62,
+      "text": "関数convertは，整数型の配列を一定のルールで文字列に変換するプログラムである。関数convertをconvert(arrayInput)として呼び出したときの戻り値が“AABAB”になる引数arrayInputの値はどれか。ここで，arrayInputの要素数は1以上とし，配列の要素番号は1から始まる。",
+      "choices": [
+        "{0, 0, 1, 2, 1}",
+        "{0, 1, 2, 1, 1}",
+        "{1, 0, 1, 2, 0}",
+        "{1, 1, 2, 1, 0}"
+      ],
+      "hasFigure": true,
+      "figureNote": "プログラム：関数convertの疑似言語コード（整数配列を文字列に変換）"
+    },
+    {
+      "number": 63,
+      "text": "SSDの全てのデータを消去し，復元できなくする方法として用いられているものはどれか。",
+      "choices": [
+        "Secure Erase",
+        "磁気消去",
+        "セキュアブート",
+        "データクレンジング"
+      ],
+      "hasFigure": false
+    }
+  ]
+}
