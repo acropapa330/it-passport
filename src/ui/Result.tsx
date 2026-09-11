@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { SessionConfig } from "../domain/types";
 import { CHOICE_LABEL, FIELDS, FIELD_LABEL } from "../domain/types";
 import type { GradeResult } from "../domain/grading";
@@ -10,6 +11,12 @@ type Props = {
 };
 
 const TITLE = { drill: "ドリル結果", review: "復習結果", exam: "模試結果" } as const;
+
+function Figure({ src }: { src: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return <div className="figure-error">画像を読み込めません</div>;
+  return <img className="figure" src={src} alt="問題の図表" onError={() => setFailed(true)} />;
+}
 
 export function Result({ config, result, onHome }: Props) {
   return (
@@ -40,7 +47,7 @@ export function Result({ config, result, onHome }: Props) {
         <details key={q.id} className="card">
           <summary>{q.exam} 問{q.number}　正解: {CHOICE_LABEL[q.answerIndex]}</summary>
           <p className="question-text">{q.text}</p>
-          {q.image && <img className="figure" src={`${import.meta.env.BASE_URL}data/${q.image}`} alt="問題の図表" />}
+          {q.image && <Figure src={`${import.meta.env.BASE_URL}data/${q.image}`} />}
           <ol className="stack" style={{ listStyle: "none", padding: 0 }}>
             {q.choices.map((c, i) => (
               <li key={i} className={i === q.answerIndex ? "choice correct card" : "choice card"}>

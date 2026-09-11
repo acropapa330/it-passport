@@ -23,7 +23,7 @@ import { Result } from "./ui/Result";
 export type Screen =
   | { name: "home" }
   | { name: "setup" }
-  | { name: "session"; config: SessionConfig }
+  | { name: "session"; config: SessionConfig; startedAt: number }
   | { name: "result"; config: SessionConfig; result: GradeResult };
 
 const QUESTIONS_URL = `${import.meta.env.BASE_URL}data/questions.json`;
@@ -34,6 +34,9 @@ export function App() {
   const [storage, setStorage] = useState<{ storage: StorageLike; persistent: boolean } | null>(null);
   const [progress, setProgress] = useState<Progress | null>(null);
   const [screen, setScreen] = useState<Screen>({ name: "home" });
+
+  const startSession = (config: SessionConfig) =>
+    setScreen({ name: "session", config, startedAt: Date.now() });
 
   // 学習記録の読み込み（初回のみ）
   const loadedOnce = useRef(false);
@@ -114,14 +117,14 @@ export function App() {
     body = (
       <Setup
         questions={questions}
-        onStart={(config) => setScreen({ name: "session", config })}
+        onStart={startSession}
         onBack={() => setScreen({ name: "home" })}
       />
     );
   } else if (screen.name === "session") {
     body = (
       <Session
-        key={screen.config.questions.map((q) => q.id).join(",")}
+        key={screen.startedAt}
         config={screen.config}
         onAnswer={handleAnswer}
         onFinish={(answers) => handleFinish(screen.config, answers)}
