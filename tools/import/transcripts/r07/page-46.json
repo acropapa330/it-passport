@@ -1,0 +1,12 @@
+{
+  "page": 46,
+  "questions": [
+    {
+      "number": 99,
+      "text": "関数calculateAmountOfPrizeは，業務改善の効果における改善額と短縮期間を，それぞれimprovementとperiodで受け取り，賞金額を戻り値とする。改善額が20万円で短縮期間が3日の業務改善と，改善額が5万円で短縮期間が14日の業務改善があった。この二つの賞金額の合計は何円か。ここで，改善額と短縮期間の値はそれぞれ0以上とする。",
+      "choices": ["1，000", "1，500", "3，000", "5，500"],
+      "hasFigure": true,
+      "figureNote": "プログラム：関数calculateAmountOfPrize(improvement, period)の疑似言語コード（if文による賞金額prizeの分岐処理）"
+    }
+  ]
+}

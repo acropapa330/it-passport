@@ -1,0 +1,23 @@
+{
+  "page": 7,
+  "questions": [
+    {
+      "number": 13,
+      "text": "新しいITソリューションの活用の是非を判断するために，そのITソリューションの提供者に，活用事例や技術情報などの提供を依頼する文書として，最も適切なものはどれか。",
+      "choices": ["EDI", "KPI", "RFI", "RFP"],
+      "hasFigure": false
+    },
+    {
+      "number": 14,
+      "text": "事業，経営情報に知財情報を組み込んで分析し，現状の俯瞰や将来展望などの分析結果を事業責任者，経営者と共有し，事業戦略又は経営戦略に反映させることを表す用語として，最も適切なものはどれか。",
+      "choices": ["CVC（Corporate Venture Capital）", "IPランドスケープ（Intellectual Property Landscape）", "MOT（Management of Technology）", "SWOT分析"],
+      "hasFigure": false
+    },
+    {
+      "number": 15,
+      "text": "事業運営における意思決定の迅速化，組織の独立採算の推進を目的とし，一つの企業の中に事業領域ごとに独立した組織を設置する組織形態はどれか。",
+      "choices": ["カンパニー制組織", "機能別組織", "プロジェクト組織", "マトリックス組織"],
+      "hasFigure": false
+    }
+  ]
+}
