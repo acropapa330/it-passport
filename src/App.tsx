@@ -1,18 +1,24 @@
 import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import type { Progress, Question, SessionConfig } from "./domain/types";
-import type { GradeResult } from "./domain/grading";
+import type { AnswerMap, GradeResult } from "./domain/grading";
+import { grade, isCorrect } from "./domain/grading";
 import { loadQuestions } from "./domain/questions";
 import { buildReview } from "./domain/quiz";
 import {
   detectStorage,
   loadProgress,
   memoryStorage,
+  recordAnswer,
   saveProgress,
   summarize,
   type StorageLike,
 } from "./domain/progress";
+import type { Choice } from "./domain/types";
 import { Home } from "./ui/Home";
 import { Footer } from "./ui/Footer";
+import { Setup } from "./ui/Setup";
+import { Session } from "./ui/Session";
+import { Result } from "./ui/Result";
 
 export type Screen =
   | { name: "home" }
@@ -69,7 +75,14 @@ export function App() {
       return next;
     });
   };
-  void updateProgress; // Task 12 で Session から使う。それまでの未使用警告よけ
+  const handleAnswer = (q: Question, choice: Choice) => {
+    updateProgress((prev) => recordAnswer(prev, q.id, isCorrect(q, choice), new Date().toISOString()));
+  };
+
+  const handleFinish = (config: SessionConfig, answers: AnswerMap) => {
+    const result = grade(config.questions, answers);
+    setScreen({ name: "result", config, result });
+  };
 
   const summary = useMemo(() => (progress ? summarize(progress) : null), [progress]);
   const reviewCount = useMemo(
@@ -97,13 +110,26 @@ export function App() {
         onReview={() => window.alert("復習は Task 13 で実装")}
       />
     );
-  } else {
+  } else if (screen.name === "setup") {
     body = (
-      <div className="stack">
-        <p>（Task 12 で実装）</p>
-        <button className="btn" onClick={() => setScreen({ name: "home" })}>ホームへ</button>
-      </div>
+      <Setup
+        questions={questions}
+        onStart={(config) => setScreen({ name: "session", config })}
+        onBack={() => setScreen({ name: "home" })}
+      />
     );
+  } else if (screen.name === "session") {
+    body = (
+      <Session
+        key={screen.config.questions.map((q) => q.id).join(",")}
+        config={screen.config}
+        onAnswer={handleAnswer}
+        onFinish={(answers) => handleFinish(screen.config, answers)}
+        onQuit={() => setScreen({ name: "home" })}
+      />
+    );
+  } else {
+    body = <Result config={screen.config} result={screen.result} onHome={() => setScreen({ name: "home" })} />;
   }
 
   return (
