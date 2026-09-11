@@ -24,7 +24,7 @@
 - 静的サイト（GitHub Pages）として配信できること。サーバー不要
 - 学習記録はブラウザの localStorage に保存する。端末間同期はしない
 - スマホ幅（約 400px）で操作しやすいこと
-- 出典表記をフッターに常時表示する
+- 出典表記をフッターに常時表示し、各問題にも「出典：令和8年度 ITパスポート試験 公開問題 問1」の形式で表示する
 
 ### やらないこと（YAGNI）
 
@@ -38,7 +38,7 @@
 - Vite + React + TypeScript
 - テスト: Vitest（`src/domain/` を対象）
 - デプロイ: GitHub Pages（`gh-pages` ブランチ or Actions）
-- 取り込みスクリプト: Node.js（`tools/import/`）。`pdftotext` / `pdftoppm`（poppler-utils）を利用
+- 取り込みスクリプト: Node.js（`tools/import/`）。`pdftotext` / `pdftoppm`（poppler-utils）を利用。問題文の書き起こしは Claude Code セッションがページ画像を読んで行う
 
 ### ディレクトリ
 
@@ -55,7 +55,10 @@ it-passport/
 │  ├─ questions.json  問題データ
 │  └─ images/         図表問題の画像
 ├─ tools/import/      PDF → JSON 変換スクリプト（アプリのビルドには関与しない）
-│  └─ raw/            IPA からDLした PDF（git 管理外）
+│  ├─ raw/            IPA からDLした PDF（git 管理外）
+│  ├─ pages/          PDF をページごとに PNG 化したもの（git 管理外）
+│  ├─ transcripts/    Claude が書き起こした問題 JSON（git 管理）
+│  └─ answers/        解答 PDF から抽出した正解 JSON（git 管理）
 └─ docs/
 ```
 
@@ -162,33 +165,63 @@ type SessionConfig = {
 
 ## 6. 取り込みパイプライン（`tools/import/`）
 
-### 前提
+### 前提（2026-09-11 調査済み）
 
-- IPA の過去問利用条件を公式ページで確認してから着手する。出典表記（試験名・年度・IPA）をアプリのフッターに入れる
-- 初回は直近3回分（300問）を対象にする
+- IPA の問題 PDF は**全ページが画像（200dpi JPEG）でテキストを含まない**。`pdftotext` は使えない
+- 解答 PDF はテキスト PDF。`pdftotext -layout` で「問 N  記号」の表として読める
+- 問題 PDF の冒頭に「問1から問34までは，ストラテジ系の問題です」のように分野の範囲が明記されている
+- 利用条件（IPA FAQ）: 教育目的なら許諾・使用料不要。出典を「出典：令和8年度 ITパスポート試験 公開問題 問1」の形式で明記する。改変した場合はその旨を明記する
+- 初回は直近3回分（令和8年度・令和7年度・令和6年度、計300問）を対象にする
+
+### 書き起こしの方法
+
+Tesseract は誤読が多い（100問中「問N」見出しを74問しか検出できない）ため使わない。
+**Claude Code セッションがページ画像を直接読み、問題ごとの JSON（transcript）を書く。**
+外部 API やキーは使わない。
 
 ### 手順
 
-1. IPA から「問題PDF」と「解答PDF」を手動でダウンロードし `tools/import/raw/<examCode>/` に置く（git 管理外）
-2. `pdftotext -layout` でテキスト化する
-3. 「問N」の見出しで問題ブロックに分割し、各ブロックを「ア/イ/ウ/エ」で本文と選択肢に切り出す
-4. 解答PDFから「問番号 → 正解記号」を読み取り `answerIndex` に変換する
-5. 分野は問番号の範囲で付与する（公開問題は分野順に並んでいる前提。範囲は回次ごとに設定ファイルで指定する）
-6. 図表問題の候補を検出して一覧出力する（本文に「図」「表」を含む、本文または選択肢が極端に短い、など）
-7. 候補について `pdftoppm` でページを PNG 化し、**人が**必要範囲を切り出して `public/data/images/<id>.png` に置き、`image` を設定する（設定ファイル `tools/import/overrides.json` に記述）
-8. 検証を通過したら `public/data/questions.json` に書き出す
+1. IPA から「問題PDF」と「解答PDF」を `tools/import/raw/` にダウンロードする（git 管理外）
+2. `pdftoppm -r 200 -png` で問題 PDF を 1 ページ 1 PNG にする（`tools/import/pages/<code>/`、git 管理外）
+3. Claude がページ画像を読み、`tools/import/transcripts/<code>/page-NN.json` を書く（git 管理する）。
+   1 問がページをまたぐ場合は、問題が始まるページの JSON にまとめて書く
+4. 解答 PDF を `pdftotext -layout` → 正規表現で「問番号 → 正解記号」を読み `tools/import/answers/<code>.json` に書く
+5. 分野は `tools/import/exams.json` に回次ごとの範囲を書き、問番号で付与する（範囲は PDF 冒頭の記述を目視で確認して転記する）
+6. transcript で `hasFigure: true` の問題は、`tools/import/overrides.json` に切り出し範囲（ページ・上端・高さ）を書き、
+   `pdftoppm -x -y -W -H` で `public/data/images/<id>.png` を切り出す。範囲は Claude がページ画像を見て決め、切り出し結果を目視確認する
+7. `tools/import/build.mjs` が transcript + answers + exams.json + 画像の有無を突き合わせ、検証を通過したら `public/data/questions.json` を書く
+
+### transcript の形式
+
+```json
+{
+  "page": 3,
+  "questions": [
+    {
+      "number": 3,
+      "text": "投資会社であるA社が，…理論である。",
+      "choices": ["−15", "0", "5", "20"],
+      "hasFigure": true,
+      "figureNote": "表：投資戦略a/b × 市況好転/悪化"
+    }
+  ]
+}
+```
+
+- 本文と選択肢は原文どおりに写す（句読点「，」「。」も PDF のまま）。改変はしない
+- 表・図・プログラム片など、テキストで再現できないものは `hasFigure: true` にして画像に任せる。本文には写さない
 
 ### 検証（失敗したらスクリプトが止まる）
 
-- 各回次で問題が100問揃っている
-- 全問に選択肢がちょうど4つある
-- 全問に `answerIndex` がある
-- `image` を指定した問題のファイルが実在する
+- 各回次で問題が 1〜100 まで欠けも重複もなく揃っている
+- 全問に選択肢がちょうど 4 つある
+- 全問に正解がある（answers.json と突合できる）
+- `hasFigure: true` の問題に画像ファイルが実在する（`--allow-missing-images` を付けたときだけ警告に緩和）
 - `id` が重複していない
 
 ### 手作業の見積もり
 
-図表問題は3回分で十数問を見込む。切り出しは 1 問あたり数分。
+書き起こしは 1 回次あたり 52〜56 ページ。図表問題は 1 回次 10 問前後を見込む。
 
 ## 7. エラー処理
 
@@ -220,4 +253,5 @@ UI は手動で動作確認する（スマホ幅でのレイアウト、タイ�
 ## 10. 出典
 
 問題データは IPA（独立行政法人情報処理推進機構）公開の ITパスポート試験 過去問題を使用する。
-アプリのフッターに出典を明記する。
+IPA の FAQ に従い、アプリのフッターと各問題に「出典：<年度> ITパスポート試験 公開問題 問<番号>」を表示する。
+問題文・選択肢は改変しない（改変した場合はその旨を明記する義務があるため）。
