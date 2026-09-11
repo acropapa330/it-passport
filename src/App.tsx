@@ -3,12 +3,13 @@ import type { Progress, Question, SessionConfig } from "./domain/types";
 import type { AnswerMap, GradeResult } from "./domain/grading";
 import { grade, isCorrect } from "./domain/grading";
 import { loadQuestions } from "./domain/questions";
-import { buildReview } from "./domain/quiz";
+import { buildExam, buildReview, EXAM_TIME_LIMIT_SEC } from "./domain/quiz";
 import {
   detectStorage,
   loadProgress,
   memoryStorage,
   recordAnswer,
+  recordExam,
   saveProgress,
   summarize,
   type StorageLike,
@@ -37,6 +38,19 @@ export function App() {
 
   const startSession = (config: SessionConfig) =>
     setScreen({ name: "session", config, startedAt: Date.now() });
+
+  const startExam = () => {
+    if (!questions) return;
+    const list = buildExam(questions, Date.now());
+    startSession({ mode: "exam", questions: list, instantFeedback: false, timeLimitSec: EXAM_TIME_LIMIT_SEC });
+  };
+
+  const startReview = () => {
+    if (!questions || !progress) return;
+    const list = buildReview(questions, progress, Date.now());
+    if (list.length === 0) return;
+    startSession({ mode: "review", questions: list, instantFeedback: true });
+  };
 
   // 学習記録の読み込み（初回のみ）
   const loadedOnce = useRef(false);
@@ -84,6 +98,11 @@ export function App() {
 
   const handleFinish = (config: SessionConfig, answers: AnswerMap) => {
     const result = grade(config.questions, answers);
+    if (config.mode === "exam") {
+      updateProgress((prev) =>
+        recordExam(prev, { finishedAt: new Date().toISOString(), score: result.score, byField: result.byField }),
+      );
+    }
     setScreen({ name: "result", config, result });
   };
 
@@ -109,8 +128,8 @@ export function App() {
         summary={summary}
         reviewCount={reviewCount}
         onDrill={() => setScreen({ name: "setup" })}
-        onExam={() => window.alert("模試は Task 13 で実装")}
-        onReview={() => window.alert("復習は Task 13 で実装")}
+        onExam={startExam}
+        onReview={startReview}
       />
     );
   } else if (screen.name === "setup") {
