@@ -1,8 +1,8 @@
-import { useState } from "react";
 import type { SessionConfig } from "../domain/types";
 import { CHOICE_LABEL, FIELDS, FIELD_LABEL } from "../domain/types";
 import type { GradeResult } from "../domain/grading";
 import { formatPercent, formatSource } from "./format";
+import { Figure } from "./Figure";
 
 type Props = {
   config: SessionConfig;
@@ -11,12 +11,6 @@ type Props = {
 };
 
 const TITLE = { drill: "ドリル結果", review: "復習結果", exam: "模試結果" } as const;
-
-function Figure({ src }: { src: string }) {
-  const [failed, setFailed] = useState(false);
-  if (failed) return <div className="figure-error">画像を読み込めません</div>;
-  return <img className="figure" src={src} alt="問題の図表" onError={() => setFailed(true)} />;
-}
 
 export function Result({ config, result, onHome }: Props) {
   return (

@@ -4,6 +4,7 @@ import { CHOICE_LABEL } from "../domain/types";
 import type { AnswerMap } from "../domain/grading";
 import { isCorrect } from "../domain/grading";
 import { formatSource, formatTime } from "./format";
+import { Figure } from "./Figure";
 
 type Props = {
   config: SessionConfig;
@@ -18,38 +19,55 @@ export function Session({ config, onAnswer, onFinish, onQuit }: Props) {
   const [selected, setSelected] = useState<Choice | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [remaining, setRemaining] = useState<number | null>(config.timeLimitSec ?? null);
-  const [imageError, setImageError] = useState(false);
+  const deadlineRef = useRef<number | null>(
+    config.timeLimitSec != null ? Date.now() + config.timeLimitSec * 1000 : null,
+  );
   const answersRef = useRef<AnswerMap>({});
   const finishedRef = useRef(false);
+  const qRef = useRef<Question>(config.questions[index]);
+  const selectedRef = useRef<Choice | null>(null);
 
   const q = config.questions[index];
   const isLast = index === total - 1;
+  qRef.current = q;
+
+  const commit = (choice: Choice) => {
+    answersRef.current = { ...answersRef.current, [qRef.current.id]: choice };
+    onAnswer(qRef.current, choice);
+  };
+
+  const commitPending = () => {
+    if (!config.instantFeedback && selectedRef.current !== null && !(qRef.current.id in answersRef.current)) {
+      commit(selectedRef.current);
+    }
+  };
 
   const finish = () => {
     if (finishedRef.current) return;
     finishedRef.current = true;
+    commitPending();
     onFinish(answersRef.current);
   };
 
-  // タイマー（模試のみ）
+  // タイマー（模試のみ）：開始時刻からの実時間で残りを計算する
   useEffect(() => {
-    if (remaining === null) return;
-    if (remaining <= 0) {
-      finish();
-      return;
-    }
-    const t = setTimeout(() => setRemaining((r) => (r ?? 1) - 1), 1000);
-    return () => clearTimeout(t);
-  }, [remaining]);
-
-  const commit = (choice: Choice) => {
-    answersRef.current = { ...answersRef.current, [q.id]: choice };
-    onAnswer(q, choice);
-  };
+    if (deadlineRef.current === null) return;
+    const tick = () => {
+      const deadline = deadlineRef.current;
+      if (deadline === null) return;
+      const next = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+      setRemaining(next);
+      if (next <= 0) finish();
+    };
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const select = (choice: Choice) => {
     if (revealed) return;
     setSelected(choice);
+    selectedRef.current = choice;
     if (config.instantFeedback) {
       setRevealed(true);
       commit(choice);
@@ -57,20 +75,29 @@ export function Session({ config, onAnswer, onFinish, onQuit }: Props) {
   };
 
   const next = () => {
-    if (!config.instantFeedback && selected !== null && !(q.id in answersRef.current)) commit(selected);
+    commitPending();
     if (isLast) {
       finish();
       return;
     }
     setIndex(index + 1);
     setSelected(null);
+    selectedRef.current = null;
     setRevealed(false);
-    setImageError(false);
   };
 
   const quit = () => {
     if (window.confirm("演習を中断してホームに戻りますか？（回答済みの記録は残ります）")) onQuit();
   };
+
+  if (total === 0) {
+    return (
+      <div className="stack">
+        <p className="muted">出題できる問題がありません。</p>
+        <button className="btn" onClick={onQuit}>ホームへ</button>
+      </div>
+    );
+  }
 
   return (
     <div className="stack">
@@ -84,10 +111,7 @@ export function Session({ config, onAnswer, onFinish, onQuit }: Props) {
 
       <div className="card">
         <p className="question-text"><b>問{q.number}</b>　{q.text}</p>
-        {q.image && !imageError && (
-          <img className="figure" src={`${import.meta.env.BASE_URL}data/${q.image}`} alt="問題の図表" onError={() => setImageError(true)} />
-        )}
-        {q.image && imageError && <div className="figure-error">画像を読み込めません</div>}
+        {q.image && <Figure src={`${import.meta.env.BASE_URL}data/${q.image}`} />}
         <p className="muted">{formatSource(q)}</p>
       </div>
 

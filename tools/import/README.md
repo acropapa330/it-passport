@@ -10,7 +10,9 @@ IPA の問題 PDF は全ページが画像なので、本文の書き起こし�
 4. `pages/r08/p-NN.png` を 1 枚ずつ Read し、`transcripts/r08/page-NN.json` を書く（下記形式）
 5. `hasFigure: true` の問題は `overrides.json` に切り出し範囲を追加し `npm run import:crop`
 6. `npm run import:build` — 検証して `public/data/questions.json` を生成
-   （画像がまだ無い段階で試すなら `npm run import:build -- --allow-missing-images`）
+   （画像がまだ無い段階で試すなら `npm run import:build -- --allow-missing-images`。
+   全 exam を対象に実行する場合、`transcripts/<code>` が無い試験があるとエラーになる。
+   一部の試験だけを対象にビルドしたいときは exam コードを引数で指定するとスキップされる）
 
 ## transcript の形式（`transcripts/<code>/page-NN.json`）
 

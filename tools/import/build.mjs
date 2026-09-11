@@ -20,8 +20,11 @@ for (const exam of exams) {
   if (only.length && !only.includes(exam.code)) continue;
   const dir = join(here, "transcripts", exam.code);
   if (!existsSync(dir)) {
-    console.log(`${exam.code}: transcripts がないのでスキップ`);
-    continue;
+    if (only.length) {
+      console.log(`${exam.code}: transcripts がないのでスキップ`);
+      continue;
+    }
+    throw new Error(`${exam.code}: transcripts がありません`);
   }
   const transcripts = readdirSync(dir)
     .filter((f) => f.endsWith(".json"))

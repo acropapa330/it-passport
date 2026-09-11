@@ -88,7 +88,13 @@ export function App() {
     setProgress((prev) => {
       if (!prev) return prev;
       const next = update(prev);
-      if (storage) saveProgress(storage.storage, next);
+      if (storage) {
+        try {
+          saveProgress(storage.storage, next);
+        } catch {
+          /* 保存失敗は無視（メモリ上の状態は更新する） */
+        }
+      }
       return next;
     });
   };
