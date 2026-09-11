@@ -16,3 +16,10 @@ node_modules/
 # OS/エディタ
 .DS_Store
 *:Zone.Identifier
+
+# Vite
+dist/
+
+# Import tools
+tools/import/raw/
+tools/import/pages/
