@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactElement } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import type { Progress, Question, SessionConfig } from "./domain/types";
 import type { GradeResult } from "./domain/grading";
 import { loadQuestions } from "./domain/questions";
@@ -30,7 +30,10 @@ export function App() {
   const [screen, setScreen] = useState<Screen>({ name: "home" });
 
   // 学習記録の読み込み（初回のみ）
+  const loadedOnce = useRef(false);
   useEffect(() => {
+    if (loadedOnce.current) return;
+    loadedOnce.current = true;
     const detected = detectStorage();
     const loaded = loadProgress(detected.storage);
     if (loaded.status === "incompatible") {
@@ -38,7 +41,10 @@ export function App() {
         "保存されている学習記録の形式が古いため読み込めません。記録を初期化しますか？\n（キャンセルすると、このセッションの記録は保存されません）",
       );
       if (reset) saveProgress(detected.storage, loaded.progress);
-      else detected.storage = memoryStorage();
+      else {
+        detected.storage = memoryStorage();
+        detected.persistent = false;
+      }
     }
     setStorage(detected);
     setProgress(loaded.progress);
