@@ -18,7 +18,13 @@ export function loadProgress(storage: StorageLike): { progress: Progress; status
   if (raw === null) return { progress: emptyProgress(), status: "empty" };
   try {
     const data = JSON.parse(raw) as Partial<Progress>;
-    if (data.version !== 1 || typeof data.attempts !== "object" || !Array.isArray(data.examResults)) {
+    if (
+      data.version !== 1 ||
+      typeof data.attempts !== "object" ||
+      data.attempts === null ||
+      Array.isArray(data.attempts) ||
+      !Array.isArray(data.examResults)
+    ) {
       return { progress: emptyProgress(), status: "incompatible" };
     }
     return { progress: data as Progress, status: "ok" };

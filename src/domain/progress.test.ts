@@ -40,6 +40,14 @@ describe("loadProgress", () => {
     s.setItem(PROGRESS_KEY, "{not json");
     expect(loadProgress(s).status).toBe("incompatible");
   });
+
+  test("attempts が null や配列なら incompatible", () => {
+    for (const attempts of [null, []]) {
+      const s = memoryStorage();
+      s.setItem(PROGRESS_KEY, JSON.stringify({ version: 1, attempts, examResults: [] }));
+      expect(loadProgress(s).status).toBe("incompatible");
+    }
+  });
 });
 
 describe("recordAnswer", () => {
