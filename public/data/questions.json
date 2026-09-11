@@ -44,7 +44,8 @@
     "5",
     "20"
    ],
-   "answerIndex": 2
+   "answerIndex": 2,
+   "image": "images/r08-003.png"
   },
   {
    "id": "r08-004",
@@ -389,7 +390,8 @@
     "70",
     "90"
    ],
-   "answerIndex": 0
+   "answerIndex": 0,
+   "image": "images/r08-026.png"
   },
   {
    "id": "r08-027",
@@ -659,7 +661,8 @@
     "85",
     "86"
    ],
-   "answerIndex": 1
+   "answerIndex": 1,
+   "image": "images/r08-044.png"
   },
   {
    "id": "r08-045",
@@ -749,7 +752,8 @@
     "15日",
     "18日"
    ],
-   "answerIndex": 2
+   "answerIndex": 2,
+   "image": "images/r08-050.png"
   },
   {
    "id": "r08-051",
@@ -824,7 +828,8 @@
     "不正侵入，初期パスワード",
     "不正侵入，有線回線"
    ],
-   "answerIndex": 2
+   "answerIndex": 2,
+   "image": "images/r08-055.png"
   },
   {
    "id": "r08-056",
@@ -854,7 +859,8 @@
     "“成績”表の学生番号と科目コード",
     "“成績”表の成績"
    ],
-   "answerIndex": 2
+   "answerIndex": 2,
+   "image": "images/r08-057.png"
   },
   {
    "id": "r08-058",
@@ -1004,7 +1010,8 @@
     "4, 5, 3, 2, 1",
     "5, 4, 3, 2, 1"
    ],
-   "answerIndex": 1
+   "answerIndex": 1,
+   "image": "images/r08-067.png"
   },
   {
    "id": "r08-068",
@@ -1019,7 +1026,8 @@
     "送信プロトコル：POP3，受信プロトコル：SMTP",
     "送信プロトコル：SMTP，受信プロトコル：IMAP4"
    ],
-   "answerIndex": 3
+   "answerIndex": 3,
+   "image": "images/r08-068.png"
   },
   {
    "id": "r08-069",
@@ -1034,7 +1042,8 @@
     "a：一貫性を保つ，b：一つの表が複数の表に分割される",
     "a：一貫性を保つ，b：複数の表が一つの表に統合される"
    ],
-   "answerIndex": 2
+   "answerIndex": 2,
+   "image": "images/r08-069.png"
   },
   {
    "id": "r08-070",
@@ -1079,7 +1088,8 @@
     "顧客 → 取引明細 → 口座",
     "取引明細 → 口座 → 顧客"
    ],
-   "answerIndex": 1
+   "answerIndex": 1,
+   "image": "images/r08-072.png"
   },
   {
    "id": "r08-073",
@@ -1109,7 +1119,8 @@
     "IF(合計(B2:B4)>2, 合計(B2:B4), IF(合計(B2:B4)=2, 0, 1))",
     "IF(合計(B2:B4)>2, 合計(B2:B4), IF(合計(B2:B4)=2, 1, 0))"
    ],
-   "answerIndex": 0
+   "answerIndex": 0,
+   "image": "images/r08-074.png"
   },
   {
    "id": "r08-075",
@@ -1139,7 +1150,8 @@
     "a：広く，b：多い",
     "a：広く，b：少ない"
    ],
-   "answerIndex": 3
+   "answerIndex": 3,
+   "image": "images/r08-076.png"
   },
   {
    "id": "r08-077",
@@ -1199,7 +1211,8 @@
     "a：低く，b：高く",
     "a：低く，b：低く"
    ],
-   "answerIndex": 3
+   "answerIndex": 3,
+   "image": "images/r08-080.png"
   },
   {
    "id": "r08-081",
@@ -1274,7 +1287,8 @@
     "a：より小さい，b：と等しい",
     "a：より小さい，b：より大きい"
    ],
-   "answerIndex": 3
+   "answerIndex": 3,
+   "image": "images/r08-085.png"
   },
   {
    "id": "r08-086",
@@ -1319,7 +1333,8 @@
     "a：1，b：60",
     "a：1，b：120"
    ],
-   "answerIndex": 0
+   "answerIndex": 0,
+   "image": "images/r08-088.png"
   },
   {
    "id": "r08-089",
@@ -1334,7 +1349,8 @@
     "a：脆弱性，b：インシデント",
     "a：リスク，b：脅威"
    ],
-   "answerIndex": 1
+   "answerIndex": 1,
+   "image": "images/r08-089.png"
   },
   {
    "id": "r08-090",
@@ -1484,7 +1500,8 @@
     "a：スクリーンリーダー，b：bps",
     "a：スクリーンリーダー，b：dpi"
    ],
-   "answerIndex": 1
+   "answerIndex": 1,
+   "image": "images/r08-099.png"
   },
   {
    "id": "r08-100",
